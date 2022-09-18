@@ -1,0 +1,41 @@
+<div class="container">
+  <div class="row d-flex justify-content-center mt-4">
+    <div class="col-md-6 col-lg-6">
+      <div class="card">
+        <div class="card-header text-center text-uppercase">
+          <h3>Agregar Empleado</h3>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="createEmpleado" (ngSubmit)="agregarEmpleado()">
+            <div class="row mb-3">
+              <div class="col">
+                <input type="text" class="form-control" formControlName="nombre" placeholder="Nombre" (keypress)="onlyLetters($event)"
+                  [class.is-valid]="this.createEmpleado.get('nombre')?.valid || (this.createEmpleado.get('nombre')?.valid && submitted)"
+                  [class.is-invalid]="this.createEmpleado.get('nombre')?.invalid && this.createEmpleado.get('nombre')?.touched || (this.createEmpleado.get('nombre')?.invalid && submitted)"
+                >
+              </div>
+              <div class="col">
+                <input type="text" class="form-control" formControlName="apellido" placeholder="Apellido"
+                  [class.is-valid]="this.createEmpleado.get('apellido')?.valid || (this.createEmpleado.get('apellido')?.valid && submitted)"
+                  [class.is-invalid]="this.createEmpleado.get('apellido')?.invalid && this.createEmpleado.get('apellido')?.touched || (this.createEmpleado.get('apellido')?.invalid && submitted)"
+                >
+              </div>
+            </div>
+            <input type="text" class="form-control mb-3" formControlName="documento" placeholder="Documento"
+              [class.is-valid]="this.createEmpleado.get('documento')?.valid || (this.createEmpleado.get('documento')?.valid && submitted)"
+              [class.is-invalid]="this.createEmpleado.get('documento')?.invalid && this.createEmpleado.get('documento')?.touched || (this.createEmpleado.get('documento')?.invalid && submitted)"
+            >
+            <input type="number" class="form-control mb-3" formControlName="salario" placeholder="Salario" min="1" (keypress)="onlyNumbers($event)"
+              [class.is-valid]="this.createEmpleado.get('salario')?.valid || (this.createEmpleado.get('salario')?.valid && submitted)"
+              [class.is-invalid]="this.createEmpleado.get('salario')?.invalid && this.createEmpleado.get('salario')?.touched || (this.createEmpleado.get('salario')?.invalid && submitted)"
+            >
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn-secondary mr-3" routerLink="/list-empleados">Volver</button>
+              <button type="submit" class="btn btn-dark">Agregar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

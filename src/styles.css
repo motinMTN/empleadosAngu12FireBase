@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
+*{
+  font-family: 'Montserrat', sans-serif;
+}
+
+body{
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),url('./assets/images/space.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 100vh;
+}
