@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Empleado } from 'src/app/interfaces/empleado';
+import { EmpleadoService } from 'src/app/services/empleado.service';
 
 @Component({
   selector: 'app-create-empleado',
@@ -11,7 +13,10 @@ export class CreateEmpleadoComponent implements OnInit {
   createEmpleado: FormGroup;
   submitted = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+              private _empleadoService: EmpleadoService,
+              private router: Router) {
+
     this.createEmpleado = this.fb.group({
       nombre: ['', [Validators.required, Validators.pattern('^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$')]],
       apellido: ['', Validators.required],
@@ -36,9 +41,14 @@ export class CreateEmpleadoComponent implements OnInit {
       fechaActualizacion: new Date()
     }
 
-    console.log({empleado});
+    this._empleadoService.agregarEmpleado(empleado).then(() =>{
+      console.log("Empleado registrado con exito...");
+      this.router.navigate(['/list-empleados']);
+    }).catch(error => {
+      console.log("No se ha podido registrar el empleado: "+error);
+    })
     this.createEmpleado.reset();
-
+    this.submitted = false;
   }
 
   onlyLetters(event: any){
