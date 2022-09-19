@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Empleado } from 'src/app/interfaces/empleado';
 import { EmpleadoService } from 'src/app/services/empleado.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-create-empleado',
@@ -15,7 +16,8 @@ export class CreateEmpleadoComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private _empleadoService: EmpleadoService,
-              private router: Router) {
+              private router: Router,
+              private toastr: ToastrService) {
 
     this.createEmpleado = this.fb.group({
       nombre: ['', [Validators.required, Validators.pattern('^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$')]],
@@ -42,10 +44,12 @@ export class CreateEmpleadoComponent implements OnInit {
     }
 
     this._empleadoService.agregarEmpleado(empleado).then(() =>{
-      console.log("Empleado registrado con exito...");
+      this.toastr.success('El empleado fue registrado con exito!', 'Empleado Registrado',{
+        positionClass: 'toast-bottom-right',
+      });
       this.router.navigate(['/list-empleados']);
     }).catch(error => {
-      console.log("No se ha podido registrar el empleado: "+error);
+      this.toastr.error('No se ha podido registrar el empleado! '+error, 'Empleado no registrado');
     })
     this.createEmpleado.reset();
     this.submitted = false;
