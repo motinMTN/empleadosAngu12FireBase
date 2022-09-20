@@ -12,7 +12,8 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class CreateEmpleadoComponent implements OnInit {
   createEmpleado: FormGroup;
-  submitted = false;
+  submitted: boolean = false;
+  loading: boolean = false;
 
   constructor(private fb: FormBuilder,
               private _empleadoService: EmpleadoService,
@@ -34,6 +35,8 @@ export class CreateEmpleadoComponent implements OnInit {
     this.submitted = true;
     if (this.createEmpleado.invalid) return;
 
+    this.loading = true;
+
     const empleado: Empleado = {
       nombre: this.createEmpleado.value.nombre,
       apellido: this.createEmpleado.value.apellido,
@@ -47,9 +50,11 @@ export class CreateEmpleadoComponent implements OnInit {
       this.toastr.success('El empleado fue registrado con exito!', 'Empleado Registrado',{
         positionClass: 'toast-bottom-right',
       });
+      this.loading = false;
       this.router.navigate(['/list-empleados']);
     }).catch(error => {
       this.toastr.error('No se ha podido registrar el empleado! '+error, 'Empleado no registrado');
+      this.loading = false;
     })
     this.createEmpleado.reset();
     this.submitted = false;
