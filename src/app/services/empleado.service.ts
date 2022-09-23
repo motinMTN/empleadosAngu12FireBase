@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentChangeAction } from '@angular/fire/compat/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
 import { Empleado } from '../interfaces/empleado';
 import { map } from 'rxjs/operators';
@@ -24,4 +24,9 @@ export class EmpleadoService {
       }))
     );
   }
+
+  eliminarEmpleado(id: string): Promise<any>{
+    return this.firestore.collection<Empleado>('empleados').doc(id).delete();
+  }
+
 }

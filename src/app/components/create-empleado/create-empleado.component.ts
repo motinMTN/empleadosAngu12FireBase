@@ -14,6 +14,7 @@ export class CreateEmpleadoComponent implements OnInit {
   createEmpleado: FormGroup;
   submitted: boolean = false;
   loading: boolean = false;
+  textLabel = 'Seleccionar archivo';
 
   constructor(private fb: FormBuilder,
               private _empleadoService: EmpleadoService,
@@ -72,6 +73,39 @@ export class CreateEmpleadoComponent implements OnInit {
     } else {
       return true;
     }
+  }
+
+  loadImage(event: any){
+
+    if (event.target.files.length>0){
+
+      this.textLabel = event.target.files[0].name;
+      var fileName = event.target.files[0].name;
+      var fileSize = event.target.files[0].size;
+
+      if(fileSize > 2000000){
+        this.toastr.error('El archivo no debe superar 2MB, intente con otro de menor peso.','Tamaño máx. superado.');
+        this.textLabel = '';
+        this.createEmpleado.controls['documento'].patchValue('');
+      }else{
+
+        var ext = fileName.split('.').pop();
+        ext = ext.toLowerCase();
+
+        switch (ext) {
+          case 'jpg':
+          case 'jpeg':
+          case 'png': break;
+          default:
+            this.textLabel = 'Seleccionar archivo';
+            this.toastr.error('El archivo no tiene la extensión adecuada.','Formato no válido.');
+            this.createEmpleado.controls['documento'].patchValue('');
+        }
+      }
+    }else{
+      this.textLabel = 'Seleccionar archivo';
+    }
+
   }
 
 }

@@ -17,16 +17,19 @@
                   >
                 </div>
                 <div class="col">
-                  <input type="text" class="form-control" formControlName="apellido" placeholder="Apellido"
+                  <input type="text" class="form-control" formControlName="apellido" placeholder="Apellido" (keypress)="onlyLetters($event)"
                     [class.is-valid]="this.createEmpleado.get('apellido')?.valid || (this.createEmpleado.get('apellido')?.valid && submitted)"
                     [class.is-invalid]="this.createEmpleado.get('apellido')?.invalid && this.createEmpleado.get('apellido')?.touched || (this.createEmpleado.get('apellido')?.invalid && submitted)"
                   >
                 </div>
               </div>
-              <input type="text" class="form-control mb-3" formControlName="documento" placeholder="Documento"
-                [class.is-valid]="this.createEmpleado.get('documento')?.valid || (this.createEmpleado.get('documento')?.valid && submitted)"
-                [class.is-invalid]="this.createEmpleado.get('documento')?.invalid && this.createEmpleado.get('documento')?.touched || (this.createEmpleado.get('documento')?.invalid && submitted)"
-              >
+              <div class="custom-file mb-3">
+                <input type="file" class="custom-file-input" formControlName="documento" id="customFileLang" accept=".png, .jpg, jpeg" (change)="loadImage($event)"
+                  [class.is-valid]="this.createEmpleado.get('documento')?.valid || (this.createEmpleado.get('documento')?.valid && submitted)"
+                  [class.is-invalid]="this.createEmpleado.get('documento')?.invalid && this.createEmpleado.get('documento')?.touched || (this.createEmpleado.get('documento')?.invalid && submitted)"
+                >
+                <label class="custom-file-label" for="customFileLang">{{ textLabel }}</label>
+              </div>
               <input type="number" class="form-control mb-3" formControlName="salario" placeholder="Salario" min="1" (keypress)="onlyNumbers($event)"
                 [class.is-valid]="this.createEmpleado.get('salario')?.valid || (this.createEmpleado.get('salario')?.valid && submitted)"
                 [class.is-invalid]="this.createEmpleado.get('salario')?.invalid && this.createEmpleado.get('salario')?.touched || (this.createEmpleado.get('salario')?.invalid && submitted)"
