@@ -4,8 +4,13 @@
       <span class="h3 text-uppercase">Listado de Empleados</span>
     </div>
     <div class="card-body">
-      <button class="btn btn-dark btn-md float-right mb-3" routerLink="/create-empleado">Agregar</button>
-      <table class="table table-striped table-hover">
+      <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-dark btn-md" routerLink="/create-empleado">Agregar</button>
+      </div>
+      <div *ngIf="empleados.length === 0" class="text-center">
+        <h5>No hay registros por mostrar</h5>
+      </div>
+      <table *ngIf="empleados.length > 0" class="table table-striped table-hover">
         <thead class="thead-dark">
           <tr>
             <!-- <th>ID</th> -->
@@ -22,12 +27,12 @@
             <td>{{empleado.nombre}}</td>
             <td>{{empleado.apellido}}</td>
             <td>{{empleado.documento}}</td>
-            <td>{{empleado.salario}}</td>
+            <td>{{empleado.salario | currency }}</td>
             <td>
-              <button type="button" class="btn btn-warning btn-sm rounded-circle mr-2">
+              <button type="button" class="btn btn-warning btn-sm rounded-circle mr-2" [routerLink]="['/edit-empleado/', empleado.id]">
                 <i class="fa-solid fa-pen-to-square text-white"></i>
               </button>
-              <button type="button" class="btn btn-danger btn-sm rounded-circle">
+              <button (click)="eliminarEmpleado(empleado.id!)" type="button" class="btn btn-danger btn-sm rounded-circle">
                 <i class="fa-solid fa-trash text-white"></i>
               </button>
             </td>
