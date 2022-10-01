@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Empleado } from 'src/app/interfaces/empleado';
 import { EmpleadoService } from 'src/app/services/empleado.service';
 import { ToastrService } from 'ngx-toastr';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-create-empleado',
@@ -15,6 +16,8 @@ export class CreateEmpleadoComponent implements OnInit {
   submitted: boolean = false;
   loading: boolean = false;
   textLabel = 'Seleccionar archivo';
+  fileFromInput!: File;
+  urlImage!: Observable<string>;
 
   constructor(private fb: FormBuilder,
               private _empleadoService: EmpleadoService,
@@ -25,7 +28,7 @@ export class CreateEmpleadoComponent implements OnInit {
       nombre: ['', [Validators.required, Validators.pattern('^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$')]],
       apellido: ['', Validators.required],
       documento: ['', Validators.required],
-      salario: ['', [Validators.required, Validators.pattern("^[1-9]+(([.][0-9]*))*$")]]
+      salario: ['', [Validators.required, Validators.pattern("^[1-9]+[0-9]*(([.][0-9]*))*$")]]
     });
   }
 
@@ -47,10 +50,12 @@ export class CreateEmpleadoComponent implements OnInit {
       fechaActualizacion: new Date()
     }
 
-    this._empleadoService.agregarEmpleado(empleado).then(() =>{
+    this._empleadoService.preAddAndUpdateEmpleado(empleado, this.fileFromInput).then(() =>{
+
       this.toastr.success('El empleado fue registrado con exito!', 'Empleado Registrado',{
         positionClass: 'toast-bottom-right',
       });
+
       this.loading = false;
       this.router.navigate(['/list-empleados']);
     }).catch(error => {
@@ -58,6 +63,8 @@ export class CreateEmpleadoComponent implements OnInit {
       this.loading = false;
     })
     this.createEmpleado.reset();
+    this.textLabel = 'Seleccionar archivo';
+    this.createEmpleado.controls['documento'].patchValue('');
     this.submitted = false;
   }
 
@@ -82,6 +89,7 @@ export class CreateEmpleadoComponent implements OnInit {
       this.textLabel = event.target.files[0].name;
       var fileName = event.target.files[0].name;
       var fileSize = event.target.files[0].size;
+      this.fileFromInput = event.target.files[0];
 
       if(fileSize > 2000000){
         this.toastr.error('El archivo no debe superar 2MB, intente con otro de menor peso.','Tamaño máx. superado.');
