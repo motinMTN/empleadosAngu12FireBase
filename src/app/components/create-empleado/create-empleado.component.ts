@@ -97,7 +97,6 @@ export class CreateEmpleadoComponent implements OnInit, OnDestroy {
     })
     this.createEmpleado.reset();
     this.textLabel = 'Seleccionar archivo';
-    console.log(this.createEmpleado.controls['documento']);
     this.createEmpleado.controls['documento'].patchValue('');
     this.submitted = false;
   }
@@ -131,8 +130,6 @@ export class CreateEmpleadoComponent implements OnInit, OnDestroy {
 
     }).catch(error => {
       this.toastr.error('No se ha podido actualizar el empleado! '+error, 'Empleado no actualizado');
-      console.log({error});
-
       this.loading = false;
     })
   }
@@ -225,7 +222,7 @@ export class CreateEmpleadoComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log(`%c********** ngOnDestroy`, `color:orange`);
+    // console.log(`%c********** ngOnDestroy`, `color:orange`);
     this.listObservers?.forEach(sub => sub.unsubscribe());
   }
 
