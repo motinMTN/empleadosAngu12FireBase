@@ -27,7 +27,6 @@ export class ListEmpleadosComponent implements OnInit, OnDestroy {
     this.loading = true;
     const loadEmpleados = this._empleadoService.obtenerEmpleados().subscribe(data => {
       this.empleados = data;
-      console.log(this.empleados);
       this.loading = false;
     });
     this.listObservers = [loadEmpleados];
@@ -58,7 +57,6 @@ export class ListEmpleadosComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log(`%c********** ngOnDestroy`, `color:blue`);
     this.listObservers.forEach(sub => sub.unsubscribe());
   }
 
