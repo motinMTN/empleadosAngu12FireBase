@@ -3,77 +3,41 @@
   border-top: none;
 }
 
-.load-backgroud{
-  position: relative;
-  transition: all .3s;
-  transition-timing-function: ease-in;
+.profile_image{
+  width: 150px;
+  height: 150px;
 }
 
-.load-backgroud::before{
-  content: " ";
-  display: block;
-  opacity: 0;
-  position: absolute;
-  z-index: -1;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transition: all .3s;
-  transition-timing-function: ease-in;
-  background: rgba(240,240,240,0.8);
+.custom-file-label{
+  overflow: hidden;
+  /* height: 35px; */
 }
 
-.spinner{
-  font-size: 3em;
-  color: #000;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 1em;
-  height: 1em;
-  margin: -0.5em;
-  opacity: 0;
-  z-index: -1;
-  transition: all .3s;
-  transition-timing-function: ease-in;
+.custom_load_image{
+  padding-inline: 15px;
+  display: flex;
+  align-items: center;
 }
 
-.spinner::after {
-  border-radius: 50%;
-  border: 0.3em solid currentColor;
-  border-left-color: transparent;
-}
-
-.spinner::after{
-  content: " ";
-  display: block;
-  width: 2em;
-  height: 2em;
-  box-sizing: border-box;
-  transform-origin: 0 0;
-  transform: translateZ(0) scale(0.5);
-  backface-visibility: hidden;
-}
-
-.running::before{
-  opacity: 1;
-  z-index: 4000;
-  display: block;
-}
-
-.running .spinner{
-  opacity: 1;
-  z-index: 4001;
-  animation: ld-spin 0.8s infinite linear;
-}
-
-@keyframes ld-spin {
-  0% {
-    animation-timing-function: cubic-bezier(0.5856,0.0703,0.4143,0.9297);
-    transform: rotate(0);
+@media (max-width: 576px) {
+  .container_apellido{
+    margin-top: 1rem;
   }
-  100% {
-    transform: rotate(360deg);
+  .profile_image{
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .profile_image{
+    width: 120px;
+    height: 120px;
+  }
+}
+
+@media (max-width: 992px) {
+  .container_img{
+    display:flex;
+    justify-content: center;
   }
 }
