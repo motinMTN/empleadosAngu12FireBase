@@ -4,6 +4,6 @@ export interface Empleado {
   apellido: string;
   documento: string;
   salario: number;
-  fechaCreacion: Date;
+  fechaCreacion?: Date;
   fechaActualizacion: Date;
 }

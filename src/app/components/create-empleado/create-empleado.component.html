@@ -1,34 +1,40 @@
 <div class="container">
   <div class="row d-flex justify-content-center mt-4">
-    <div class="col-md-6 col-lg-6">
-      <div class="load-backgroud" [class.running]="this.loading">
+    <div class="col-md-10 col-lg-6">
+      <div class="load-background" [class.running]="this.loading">
         <div class="spinner"></div>
         <div class="card">
           <div class="card-header text-center text-uppercase">
-            <h3>Agregar Empleado</h3>
+            <h3>{{titulo}} Empleado</h3>
           </div>
           <div class="card-body">
-            <form [formGroup]="createEmpleado" (ngSubmit)="agregarEmpleado()">
+            <form [formGroup]="createEmpleado" (ngSubmit)="opcionEmpleado()">
               <div class="row mb-3">
-                <div class="col">
+                <div class="col-lg-6 col-md-6">
                   <input type="text" class="form-control" formControlName="nombre" placeholder="Nombre" (keypress)="onlyLetters($event)"
                     [class.is-valid]="this.createEmpleado.get('nombre')?.valid || (this.createEmpleado.get('nombre')?.valid && submitted)"
                     [class.is-invalid]="this.createEmpleado.get('nombre')?.invalid && this.createEmpleado.get('nombre')?.touched || (this.createEmpleado.get('nombre')?.invalid && submitted)"
                   >
                 </div>
-                <div class="col">
+                <div class="container_apellido col-lg-6 col-md-6">
                   <input type="text" class="form-control" formControlName="apellido" placeholder="Apellido" (keypress)="onlyLetters($event)"
                     [class.is-valid]="this.createEmpleado.get('apellido')?.valid || (this.createEmpleado.get('apellido')?.valid && submitted)"
                     [class.is-invalid]="this.createEmpleado.get('apellido')?.invalid && this.createEmpleado.get('apellido')?.touched || (this.createEmpleado.get('apellido')?.invalid && submitted)"
                   >
                 </div>
               </div>
-              <div class="custom-file mb-3">
-                <input type="file" class="custom-file-input" formControlName="documento" id="customFileLang" accept=".png, .jpg, jpeg" (change)="loadImage($event)"
-                  [class.is-valid]="this.createEmpleado.get('documento')?.valid || (this.createEmpleado.get('documento')?.valid && submitted)"
-                  [class.is-invalid]="this.createEmpleado.get('documento')?.invalid && this.createEmpleado.get('documento')?.touched || (this.createEmpleado.get('documento')?.invalid && submitted)"
-                >
-                <label class="custom-file-label" for="customFileLang">{{ textLabel }}</label>
+              <div class="row mb-3 custom_load_image">
+
+                <div class="custom-file col-lg-8 col-md-6">
+                  <input type="file" class="custom-file-input" formControlName="documento" id="customFileLang" accept=".png, .jpg, .jpeg" (change)="loadImage($event)"
+                    [class.is-valid]="this.createEmpleado.get('documento')?.valid || (this.createEmpleado.get('documento')?.valid && submitted)"
+                    [class.is-invalid]="this.createEmpleado.get('documento')?.invalid && this.createEmpleado.get('documento')?.touched || (this.createEmpleado.get('documento')?.invalid && submitted)"
+                  >
+                  <label class="custom-file-label" for="customFileLang">{{ textLabel }}</label>
+                </div>
+                <div class="container_img col-lg-4 col-md-6">
+                  <img [src]="imgURL" class="profile_image"/>
+                </div>
               </div>
               <input type="number" class="form-control mb-3" formControlName="salario" placeholder="Salario" min="1" (keypress)="onlyNumbers($event)"
                 [class.is-valid]="this.createEmpleado.get('salario')?.valid || (this.createEmpleado.get('salario')?.valid && submitted)"
@@ -36,7 +42,7 @@
               >
               <div class="d-flex justify-content-end">
                 <button type="button" class="btn btn-secondary mr-3" routerLink="/list-empleados">Volver</button>
-                <button type="submit" class="btn btn-dark">Agregar</button>
+                <button type="submit" class="btn btn-dark">{{titulo}}</button>
               </div>
             </form>
           </div>

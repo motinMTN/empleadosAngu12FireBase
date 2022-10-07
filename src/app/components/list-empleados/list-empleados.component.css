@@ -2,3 +2,15 @@
   width: 150px;
   height: 150px;
 }
+
+table.list_empleados td{
+  vertical-align: middle;
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575px) {
+  .profile_image{
+    width: 100px;
+    height: 100px;
+  }
+}

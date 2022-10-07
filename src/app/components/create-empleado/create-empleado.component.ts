@@ -1,28 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Empleado } from 'src/app/interfaces/empleado';
 import { EmpleadoService } from 'src/app/services/empleado.service';
 import { ToastrService } from 'ngx-toastr';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-create-empleado',
   templateUrl: './create-empleado.component.html',
   styleUrls: ['./create-empleado.component.css']
 })
-export class CreateEmpleadoComponent implements OnInit {
+export class CreateEmpleadoComponent implements OnInit, OnDestroy {
   createEmpleado: FormGroup;
   submitted: boolean = false;
   loading: boolean = false;
-  textLabel = 'Seleccionar archivo';
-  fileFromInput!: File;
-  urlImage!: Observable<string>;
+  textLabel: string = 'Seleccionar archivo';
+  fileFromInput!: any;
+  imgURL: any = 'https://via.placeholder.com/150x150.png';
+  id: string | null;
+  titulo: string = 'Agregar';
+  listObservers!: Array<Subscription>;
+  imgOriginal: any;
 
   constructor(private fb: FormBuilder,
               private _empleadoService: EmpleadoService,
               private router: Router,
-              private toastr: ToastrService) {
+              private toastr: ToastrService,
+              private aRoute: ActivatedRoute) {
 
     this.createEmpleado = this.fb.group({
       nombre: ['', [Validators.required, Validators.pattern('^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$')]],
@@ -30,14 +36,38 @@ export class CreateEmpleadoComponent implements OnInit {
       documento: ['', Validators.required],
       salario: ['', [Validators.required, Validators.pattern("^[1-9]+[0-9]*(([.][0-9]*))*$")]]
     });
+    this.id = this.aRoute.snapshot.paramMap.get('id');
   }
 
   ngOnInit(): void {
+    this.esEditar();
   }
 
-  agregarEmpleado(){
+  opcionEmpleado(){
     this.submitted = true;
     if (this.createEmpleado.invalid) return;
+
+    if(this.id === null){
+      this.agregarEmpleado();
+    }else{
+      Swal.fire({
+        title: '¿Estás seguro de actualizar la información del empleado?',
+        text: 'No podrás recuperar la información anterior',
+        icon: 'warning',
+        heightAuto: false,
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.value) {
+          this.editarEmpleado(this.id!);
+        }
+      });
+    }
+
+  }
+
+  private agregarEmpleado(){
 
     this.loading = true;
 
@@ -50,14 +80,17 @@ export class CreateEmpleadoComponent implements OnInit {
       fechaActualizacion: new Date()
     }
 
-    this._empleadoService.preAddAndUpdateEmpleado(empleado, this.fileFromInput).then(() =>{
+    this._empleadoService.preAddEmpleado(empleado, this.fileFromInput).then(() =>{
 
       this.toastr.success('El empleado fue registrado con exito!', 'Empleado Registrado',{
         positionClass: 'toast-bottom-right',
       });
 
-      this.loading = false;
-      this.router.navigate(['/list-empleados']);
+      setTimeout(() => {
+        this.loading = false;
+        this.router.navigate(['/list-empleados']);
+      }, 1000);
+
     }).catch(error => {
       this.toastr.error('No se ha podido registrar el empleado! '+error, 'Empleado no registrado');
       this.loading = false;
@@ -66,6 +99,39 @@ export class CreateEmpleadoComponent implements OnInit {
     this.textLabel = 'Seleccionar archivo';
     this.createEmpleado.controls['documento'].patchValue('');
     this.submitted = false;
+  }
+
+  private editarEmpleado(id:string) {
+    this.loading = true;
+
+    const empleado: Empleado = {
+      nombre: this.createEmpleado.value.nombre,
+      apellido: this.createEmpleado.value.apellido,
+      documento: this.createEmpleado.value.documento,
+      salario: this.createEmpleado.value.salario,
+      fechaActualizacion: new Date()
+    }
+
+    if(this.imgURL === this.imgOriginal){
+      empleado.documento = this.imgOriginal;
+      this.fileFromInput = null;
+    }
+
+    this._empleadoService.actualizarEmpleado(id,empleado,this.fileFromInput,this.imgOriginal).then(() =>{
+
+      this.toastr.success('El empleado fue actualizado con exito!', 'Empleado Actualizado',{
+        positionClass: 'toast-bottom-right',
+      });
+
+      setTimeout(() => {
+        this.loading = false;
+        this.router.navigate(['/list-empleados']);
+      }, 1000);
+
+    }).catch(error => {
+      this.toastr.error('No se ha podido actualizar el empleado! '+error, 'Empleado no actualizado');
+      this.loading = false;
+    })
   }
 
   onlyLetters(event: any){
@@ -83,13 +149,14 @@ export class CreateEmpleadoComponent implements OnInit {
   }
 
   loadImage(event: any){
+    this.createEmpleado.controls['documento'].addValidators([Validators.required]); //requerido para cuando se va a editar algun empleado
+    if (event.target.files  && event.target.files[0]){
 
-    if (event.target.files.length>0){
-
-      this.textLabel = event.target.files[0].name;
-      var fileName = event.target.files[0].name;
-      var fileSize = event.target.files[0].size;
       this.fileFromInput = event.target.files[0];
+
+      this.textLabel = this.fileFromInput.name;
+      var fileName = this.fileFromInput.name;
+      var fileSize = this.fileFromInput.size;
 
       if(fileSize > 2000000){
         this.toastr.error('El archivo no debe superar 2MB, intente con otro de menor peso.','Tamaño máx. superado.');
@@ -98,22 +165,65 @@ export class CreateEmpleadoComponent implements OnInit {
       }else{
 
         var ext = fileName.split('.').pop();
-        ext = ext.toLowerCase();
+        ext = ext!.toLowerCase();
 
         switch (ext) {
           case 'jpg':
           case 'jpeg':
-          case 'png': break;
+          case 'png':
+            let reader = new FileReader();
+            reader.onload = () =>
+            {
+              this.imgURL = reader.result as string;
+            }
+            reader.readAsDataURL(this.fileFromInput);
+            break;
           default:
             this.textLabel = 'Seleccionar archivo';
             this.toastr.error('El archivo no tiene la extensión adecuada.','Formato no válido.');
             this.createEmpleado.controls['documento'].patchValue('');
+            this.imgURL = 'https://via.placeholder.com/150x150.png';
         }
       }
     }else{
       this.textLabel = 'Seleccionar archivo';
+      this.imgURL = 'https://via.placeholder.com/150x150.png';
     }
 
+  }
+
+  esEditar(){
+    if(this.id != null){
+      this.loading = true;
+      this.titulo = 'Actualizar';
+      const loadEmpleado = this._empleadoService.obtenerEmpleado(this.id).subscribe( data => {
+
+        this.createEmpleado.patchValue({
+          nombre: data.payload.data()['nombre'],
+          apellido: data.payload.data()['apellido'],
+          salario: data.payload.data()['salario']
+        });
+
+        this.textLabel = data.payload.data()['imageName'];
+        this.imgURL = data.payload.data()['documento'];
+        this.imgOriginal = this.imgURL;
+
+        if (this.textLabel && this.imgURL) {
+          this.createEmpleado.controls['documento'].removeValidators([Validators.required]);
+          this.createEmpleado.controls['documento'].updateValueAndValidity();
+        }else{
+          this.createEmpleado.controls['documento'].markAsTouched();
+          this.createEmpleado.controls['documento'].updateValueAndValidity();
+        }
+        this.loading = false;
+      });
+      this.listObservers = [loadEmpleado];
+    }
+  }
+
+  ngOnDestroy(): void {
+    // console.log(`%c********** ngOnDestroy`, `color:orange`);
+    this.listObservers?.forEach(sub => sub.unsubscribe());
   }
 
 }
