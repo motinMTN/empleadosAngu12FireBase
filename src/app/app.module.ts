@@ -1,26 +1,23 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
-import { ReactiveFormsModule } from '@angular/forms';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireStorageModule } from "@angular/fire/compat/storage";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from "ngx-toastr";
+import { EmpleadoModule } from './empleado/empleado.module';
 
 import { AppComponent } from './app.component';
-import { ListEmpleadosComponent } from './components/list-empleados/list-empleados.component';
-import { CreateEmpleadoComponent } from './components/create-empleado/create-empleado.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { NotFound404Component } from './components/not-found404/not-found404.component';
+
+import { NavbarComponent } from './shared/components/navbar/navbar.component';
+import { NotFound404Component } from './shared/components/not-found404/not-found404.component';
 
 import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ListEmpleadosComponent,
-    CreateEmpleadoComponent,
     NavbarComponent,
     NotFound404Component,
   ],
@@ -30,9 +27,9 @@ import { environment } from '../environments/environment';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireStorageModule,
-    ReactiveFormsModule,
     BrowserAnimationsModule, // required animations module
     ToastrModule.forRoot(), // ToastrModule added
+    EmpleadoModule
   ],
   providers: [],
   bootstrap: [AppComponent]
