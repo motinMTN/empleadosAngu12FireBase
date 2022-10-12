@@ -14,7 +14,6 @@ export class FiltroCountPipe implements PipeTransform {
     search = search.toLowerCase();
     let filteredEmpleados = empleados.filter( empleado => empleado.nombre.toLowerCase().includes( search ) || empleado.apellido.toLowerCase().includes( search ) );
     this.countData = filteredEmpleados.length;
-    console.log(this.countData);
 
     return this.countData;
   }
