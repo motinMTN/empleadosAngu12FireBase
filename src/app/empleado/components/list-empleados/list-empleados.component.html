@@ -6,8 +6,9 @@
         <span class="h3 text-uppercase">Listado de Empleados</span>
       </div>
       <div class="card-body">
-        <div class="d-flex justify-content-end mb-3">
-          <button class="btn btn-dark btn-md" routerLink="/create-empleado">Agregar</button>
+        <div class="d-flex justify-content-between mb-3">
+          <input type="text" class="form-control-md" placeholder="Buscar Empleado" #txtSearch (keyup)="onSearchEmpleado( txtSearch.value )">
+          <button class="btn btn-dark btn-sm" routerLink="/create-empleado">Agregar</button>
         </div>
         <div *ngIf="empleados.length === 0" class="text-center d-none" [class.d-block]="!this.loading">
           <h5>No hay registros por mostrar</h5>
@@ -23,7 +24,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let empleado of empleados">
+            <tr *ngFor="let empleado of empleados | filtro:page:elementsByPage:search">
               <td>{{empleado.nombre}}</td>
               <td>{{empleado.apellido}}</td>
               <td><img src="{{empleado.documento}}" alt="" class="profile_image"></td>
@@ -39,6 +40,14 @@
             </tr>
           </tbody>
         </table>
+        <div class="buttons_container">
+          <button class="btn btn-sm btn-dark" (click)="prevPage()">Anteriores</button>
+          <button class="btn btn-sm btn-dark" (click)="nextPage()">Siguientes</button>
+        </div>
+        <div class="d-flex align-items-center flex-column-reverse">
+          <span>Total de elementos: <span #empleadosCount>{{ empleados | filtroCount:search}}</span></span>
+          <span>Página {{ currentPage }} de {{lastPage}}</span>
+        </div>
       </div>
     </div>
   </div>
